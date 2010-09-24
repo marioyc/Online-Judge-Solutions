@@ -1,0 +1,8 @@
+1935(Symmetric order): Recursión
+1144(Tree Recovery): recursion
+1903(Word Amalgamation): permutaciones
+1695(Count on Canton): matemática
+2189(The Key Stations): grafos(bfs)
+1008(Cipher): ciclos en permutaciones
+1150(Sum of Factorials): bitwise o subset sum
+2935(Phone List): ordenamiento
