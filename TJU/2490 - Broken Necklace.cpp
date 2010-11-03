@@ -1,8 +1,3 @@
-/*
-ID: zion_ba1
-LANG: C++
-TASK: beads
-*/
 #include <cstdio>
 #include <algorithm>
 
