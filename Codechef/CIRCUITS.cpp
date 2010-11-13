@@ -20,7 +20,7 @@ int main(){
             }
         }
         
-        double eps=1e-8,lo = 0,hi = 1,mi;
+        double eps = 1e-8,lo = 0,hi = 1,mi;
         
         for(int it = 0;it<30;++it){
             mi = (lo+hi)/2;
