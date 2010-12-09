@@ -6,37 +6,37 @@
 
 <?php
 
+$categories = array('obi', 'regionais', 'seletivas', 'sulamericana', );
 $problems = array();
 
-for($i = 0;$i<31;++$i){
-    $lim = $i*50;
-    $body = file_get_contents("http://www.spoj.pl/problems/classical/sort=-6,start=$lim");
-    
-    $problemPosition = getPositions($body, '<tr class="problemrow">');
-    if(count($problemPosition)==0) break;
-    $end = getTableEnd($body, $problemPosition[count($problemPosition)-1]);
-    
-    $body = substr($body,$problemPosition[0],$end-$problemPosition[0]-1);
-    $desc = explodeX(array("<", ">", ), $body);
-    
-    $n = count($desc);
-    
-    for($j = 0;$j+43<$n;$j += 44)
-        $problems[] = new Problem(substr($desc[$j+22],1,strlen($desc[$j+22])-1), $desc[$j+12], (int)$desc[$j+30]);
+foreach($categories as $category){
+    for($i = 0;$i<2;++$i){
+        $lim = $i*50;
+        $body = file_get_contents("https://br.spoj.pl/problems/$category/sort=-6,start=$lim");
+        
+        $problemPosition = getPositions($body, '<tr class="problemrow">');
+        if(count($problemPosition)==0) break;
+        $end = getTableEnd($body, $problemPosition[count($problemPosition)-1]);
+        
+        $body = substr($body,$problemPosition[0],$end-$problemPosition[0]-1);
+        $desc = explodeX(array("<", ">", ), $body);
+        
+        $n = count($desc);
+        
+        for($j = 0;$j+43<$n;$j += 44)
+            $problems[] = new Problem(substr($desc[$j+22],1,strlen($desc[$j+22])-1), $desc[$j+12], (int)$desc[$j+30]);
+    }
 }
 
+usort($problems, 'compProblems');
 
-$users = array( "marioyc" => array(), "trulo_17" => array(), "hamlet_fiis" => array(), "roypalacios" => array(), "a20012251" => array(),);
+$users = array("marioyc" => array(), "rahenri" => array(), "lfschultz" => array(), "eribas" => array(), "atol" => array(), );
 
 foreach($users as $user=>$solved){
-    $body = file_get_contents("http://www.spoj.pl/users/$user/");
+    $body = file_get_contents("https://br.spoj.pl/users/$user/");
+    $count = preg_match_all('/<a href="\/status\/[A-Z0-9]+,'.$user.'\/">([A-Z0-9]+)<\/a>/', $body, $match,  PREG_SET_ORDER);
     
-    preg_match('/<tr class="lightrow">\s<td><b>([0-9]+)<\/b>\<\/td>/',$body,$match);
-    $AC = (int)$match[1];
-    
-    $count = preg_match_all('/<a [^<>]+>([A-Z0-9]+)<\/a>/', $body, $match,  PREG_SET_ORDER);
-    //var_dump($match);
-    for($i = 0;$i<$AC;++$i)
+    for($i = 0;$i<$count;++$i)
         $users[$user][$match[$i][1]] = TRUE;
 }
 
@@ -59,7 +59,8 @@ echo "</tr></thead><tbody>";
 
 $NUM_PROB = count($problems);
 
-for($i = 0;$i<$NUM_PROB;++$i){
+for($i = $NUM_PROB-1;$i>=0;--$i){
+    if($i>0 && $problems[$i]->id==$problems[$i-1]->id) continue;
     $id = $problems[$i]->id;
     $name = $problems[$i]->name;
     $AC = $problems[$i]->AC;

@@ -19,7 +19,7 @@ for($vol = 1;$vol<=28;++$vol){
 
 usort($problems, 'compProblems');
 
-$users = array( "marioyc" => array(),"trulo17" => array(),"hamlet" => array(), "roypalacios" => array(), "forifchen" => array(),"a20012251" => array(), "romer" => array(),);
+$users = array("marioyc" => array(), "trulo17" => array(), "hamlet" => array(), "roypalacios" => array(), "forifchen" => array(),"a20012251" => array(), "romer" => array(), "RHman16" => array(),);
 
 foreach($users as $user=>$solved){
     $body = file_get_contents("http://acm.tju.edu.cn/toj/user_$user.html");
@@ -30,16 +30,22 @@ foreach($users as $user=>$solved){
         $users[$user][$match[$i][1]] = TRUE;
 }
 
+$total = count($problems);
+echo "<h1>$total problemas</h1><br>";
+
 echo "\n<table border=1 bordercolor=lightgrey bordercolordark=gray cellpadding=5 style='border-collapse: collapse' align=center><thead>";
 echo "<tr bgcolor=#FFFFD0>";
 echo "<th width=50><font color=blue>ID</font></th>";
 echo "<th width=320><font color=green>Title</font></th>";
 echo "<th width=70><font color=red>AC</font></th>";
 
-foreach($users as $user=>$solved) echo "<th>$user</th>";
-echo "</tr></thead>"; 
+foreach($users as $user=>$solved){
+    $solved = count($users[$user]);
+    echo "<th>$user<br>($solved)</th>";
+}
+echo "</tr></thead><tbody>"; 
 
-for($i = count($problems)-1,$even = 1;$i>=0;--$i){
+for($i = $total-1,$even = 1;$i>=0;--$i){
     $id = $problems[$i]->id;
     $name = $problems[$i]->name;
     $AC = $problems[$i]->AC;
@@ -62,7 +68,7 @@ for($i = count($problems)-1,$even = 1;$i>=0;--$i){
     
     echo "</tr>";
 }
-echo "\n</table>";
+echo "\n</tbody></table>";
 
 ?>
 

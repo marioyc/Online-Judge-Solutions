@@ -31,6 +31,9 @@ foreach($users as $user=>$solved){
         $users[$user][$match[$i][1]] = TRUE;
 }
 
+$total = count($problems);
+echo "<h1>$total problemas</h1><br>";
+
 echo "\n<table border=1 bordercolor=#999999 bordercolordark=gray cellpadding=5 style='border-collapse: collapse' align=center><thead>";
 echo "<tr bgcolor=#A4C6FF>";
 echo "<th width=50><font color=black>ID</font></th>";
@@ -38,8 +41,11 @@ echo "<th width=320><font color=black>Title</font></th>";
 echo "<th width=65><font color=black>Accepted</font></th>";
 
 
-foreach($users as $user=>$solved) echo "<th width=150>".$users[$user]['name']."</th>";
-echo "</tr></thead>"; 
+foreach($users as $user=>$solved){
+    $solved = count($users[$user])-1;
+    echo "<th width=150>".$users[$user]['name']."<br>($solved)</th>";
+}
+echo "</tr></thead><tbody>";
 
 for($i = count($problems)-1,$even = 1;$i>=0;--$i){
     $id = $problems[$i]->id;
@@ -62,7 +68,7 @@ for($i = count($problems)-1,$even = 1;$i>=0;--$i){
     
     echo "</tr>";
 }
-echo "\n</table>";
+echo "\n</tbody></table>";
 
 ?>
 
