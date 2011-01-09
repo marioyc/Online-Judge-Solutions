@@ -61,7 +61,10 @@ int main(){
         
         if(adj[grid][S][C]) puts("No Cheese!");
         else{
-            for(int mask = 0;mask<=grid;++mask){
+            memset(win,false,sizeof(win));
+            
+            for(int x = grid,mask;x>0;x = (x-1)&grid){
+                mask = ~x & grid;
                 win[mask] = false;
                 
                 if(!adj[mask][S][C])
@@ -69,6 +72,11 @@ int main(){
                         if((mask & (1<<i))!=0 && !win[mask & ~(1<<i)])
                             win[mask] = true;
             }
+            
+            if(!adj[grid][S][C])
+                for(int i = 0;i<12;++i)
+                        if((grid & (1<<i))!=0 && !win[grid & ~(1<<i)])
+                            win[grid] = true;
             
             if(win[grid]) puts("SOHA");
             else puts("TARA");
