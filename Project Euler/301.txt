@@ -1,0 +1,15 @@
+Generally, we have
+(x ^ y) + 2 * (x & y) = x + y
+
+Let x = n, y = 2n.
+(n ^ 2n) + 2 * (n & 2n) = 3n
+
+So the following conditions are all equivalent.
+
+* X(n, 2n, 3n) = 0
+* n ^ 2n ^ 3n = 0
+* n ^ 2n = 3n
+* n & 2n = 0
+* n doesn't have consecutive 1's in binary expression
+
+So, total is a fibonacci number
