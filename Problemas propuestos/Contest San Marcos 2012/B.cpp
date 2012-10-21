@@ -68,12 +68,24 @@ int main(){
             
             if((Ltotal - L + delta) % 2 != 0) puts("Que mala memoria pepe!");
             else{
-                int a = (Ltotal - L + delta) / 2;
-                int b = Ltotal - L - a;
+                bool ok = true;
                 
-                for(int i = 0;i < a;++i) putchar('(');
-                for(int i = 0;i < b;++i) putchar(')');
-                puts(s);
+                for(int i = 0,aux = delta;i < L;++i){
+                    if(s[i] == '(') ++aux;
+                    else --aux;
+                    
+                    if(aux < 0) ok = false;
+                }
+                
+                if(!ok) puts("Que mala memoria pepe!");
+                else{
+                    int a = (Ltotal - L + delta) / 2;
+                    int b = Ltotal - L - a;
+                    
+                    for(int i = 0;i < a;++i) putchar('(');
+                    for(int i = 0;i < b;++i) putchar(')');
+                    puts(s);
+                }
             }
         }
     }
