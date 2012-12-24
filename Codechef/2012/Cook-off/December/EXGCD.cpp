@@ -35,16 +35,11 @@ int main(){
                 for(int j = i*i;j <= MAXN;j += i)
                     factor[j] = i;
         }else{
-            int aux = i,p = factor[i];
-            phi[i] = 1;
+            int p = factor[i];
+            int aux = i / p;
             
-            while(aux % p == 0){
-                aux /= p;
-                phi[i] *= p;
-            }
-            
-            phi[i] -= phi[i] / p;
-            phi[i] *= phi[aux];
+            if(aux % p == 0) phi[i] = phi[aux] * p;
+            else phi[i] = (p - 1) * phi[aux];
         }
     }
     
