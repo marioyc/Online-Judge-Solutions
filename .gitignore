@@ -1,0 +1,12 @@
+# VIM
+
+.*.sw[a-z]
+*.un~
+Session.vim
+.netrwhist
+
+# LINUX
+
+.*
+!.gitignore
+*~
