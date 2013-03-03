@@ -1,120 +1,106 @@
 #include <cstdio>
+#include <cstring>
 #include <algorithm>
+#include <vector>
 
 using namespace std;
 
-#define MAXN 100000
-#define LOG2_MAXN 16
+#define maxn 100000
 
-int n,a[MAXN],M[LOG2_MAXN+2][MAXN];
-int depth[(1<<(LOG2_MAXN+2))],L[(1<<(LOG2_MAXN+2))],first[(1<<(LOG2_MAXN+2))];
+int a[maxn],b[18][maxn];
 
-void generate(int node, int d, int s, int e){
-	depth[node] = d;
-	L[node] = e-s+1;
-	first[node] = s;
-	
-	if(s==e) M[d][s] = a[s];
-	else{
-		int mi = (s+e)/2;
-		
-		generate(2*node+1,d+1,s,mi);
-		generate(2*node+2,d+1,mi+1,e);
-		
-		int sz1 = mi-s+1,sz2 = e-mi;
-		int s1 = s,s2 = mi+1;
-		int cont1 = 0,cont2 = 0;
-		
-		while(cont1<sz1 && cont2<sz2){
-			if(M[d+1][s1+cont1]<M[d+1][s2+cont2]){
-				M[d][s+cont1+cont2] = M[d+1][s1+cont1];
-				++cont1;
-			}else{
-				M[d][s+cont1+cont2] = M[d+1][s2+cont2];
-				++cont2;
-			}
-		}
-		
-		if(cont1==sz1){
-			while(cont2!=sz2){
-				M[d][s+cont1+cont2] = M[d+1][s2+cont2];
-				++cont2;
-			}
-		}else{
-			while(cont1!=sz1){
-				M[d][s+cont1+cont2] = M[d+1][s1+cont1];
-				++cont1;
-			}
-		}
-	}
+void merge(int depth, int l, int r){
+    if(l == r) b[depth][l] = a[l];
+    else{
+        int mi = (l + r) >> 1;
+        
+        merge(depth + 1,l,mi);
+        merge(depth + 1,mi + 1,r);
+        
+        int pos1 = l,pos2 = mi + 1,pos = l;
+        
+        while(pos1 <= mi && pos2 <= r){
+            if(b[depth + 1][pos1] < b[depth + 1][pos2])
+                b[depth][pos++] = b[depth + 1][pos1++];
+            else
+                b[depth][pos++] = b[depth + 1][pos2++];
+        }
+        
+        while(pos1 <= mi)
+            b[depth][pos++] = b[depth + 1][pos1++];
+        
+        while(pos2 <= r)
+            b[depth][pos++] = b[depth + 1][pos2++];
+    }
 }
 
-int num,ind[LOG2_MAXN];
+struct node{
+    int depth,l,r;
+    
+    node(){}
+    node(int _depth, int _l, int _r):
+        depth(_depth), l(_l), r(_r){}
+};
 
-void get_nodes(int node, int s, int e, int a, int b){
-	if(s>b || e<a) return;
-	
-	if(s>=a && e<=b){
-		ind[num] = node;
-		++num;
-	}else{
-		int mi = (s+e)/2;
-		get_nodes(2*node+1,s,mi,a,b);
-		get_nodes(2*node+2,mi+1,e,a,b);
-	}
-}
+vector<node> vq;
 
-int count(int idx, int val){
-	int d = depth[idx],s = first[idx],l = L[idx];
-	
-	if(M[d][s]>val) return 0;
-	
-	int lo = 0,hi = l-1,mi;
-	
-	while(lo!=hi){
-		mi = (lo+hi+1)/2;
-		
-		if(M[d][s+mi]<=val) lo = mi;
-		else hi = mi-1;
-	}
-	
-	return lo+1;
-}
-
-int get_Kth(int s, int e, int k){
-	num = 0;
-	get_nodes(0,0,n-1,s,e);
-	
-	int lo = 0,hi = n-1,mi;
-	
-	while(lo!=hi){
-		mi = (lo+hi)/2;
-		
-		int cont = 0;
-		
-		for(int i = 0;i<num;++i)
-			cont += count(ind[i],a[mi]);
-		
-		if(cont<k) lo = mi+1;
-		else hi = mi;
-	}
-	
-	return a[lo];
+void query(int depth, int l, int r, int x, int y){
+    if(y < l || x > r) return;
+    if(x <= l && r <= y) vq.push_back(node(depth,l,r));
+    else{
+        int mi = (l + r) >> 1;
+        query(depth + 1,l,mi,x,y);
+        query(depth + 1,mi + 1,r,x,y);
+    }
 }
 
 int main(){
-	int m;
-	scanf("%d %d",&n,&m);
-	
-	for(int i = 0;i<n;++i) scanf("%d",&a[i]);
-	
-	generate(0,0,0,n-1);
-	for(int i = 0;i<n;++i) a[i] = M[0][i];
-	
-	for(int i = 0,s,e,k;i<m;++i){
-		scanf("%d %d %d",&s,&e,&k);
-		printf("%d\n",get_Kth(s-1,e-1,k));
-	}
-	
-	return 0;
+    int n,m;
+    
+    scanf("%d %d",&n,&m);
+    
+    for(int i = 0;i < n;++i)
+        scanf("%d",&a[i]);
+    
+    merge(0,0,n - 1);
+    sort(a,a + n);
+    
+    int l,r,k;
+    
+    while(m--){
+        scanf("%d %d %d",&l,&r,&k);
+        --l; --r;
+        
+        vq.clear();
+        query(0,0,n - 1,l,r);
+        
+        int lo = 0,hi = n - 1,mi;
+        
+        while(lo < hi){
+            mi = (lo + hi) >> 1;
+            
+            int x = a[mi],cont = 0;
+            
+            for(int i = vq.size() - 1;i >= 0;--i){
+                int lo2 = vq[i].l,hi2 = vq[i].r,mi2;
+                
+                while(lo2 < hi2){
+                    mi2 = (lo2 + hi2 + 1) >> 1;
+                    
+                    if(b[ vq[i].depth ][mi2] > x) hi2 = mi2 - 1;
+                    else lo2 = mi2;
+                }
+                
+                if(b[ vq[i].depth ][lo2] <= x)
+                    cont += lo2 - vq[i].l + 1;
+            }
+            
+            if(cont < k) lo = mi + 1;
+            else hi = mi;
+        }
+        
+        printf("%d\n",a[lo]);
+    }
+    
+    return 0;
 }
