@@ -1,99 +1,84 @@
 #include <cstdio>
 #include <cstring>
+#include <algorithm>
 #include <vector>
-#include <set>
 #include <map>
 
 using namespace std;
 
-int A[100000],B[100000],V,deg[200000];
-vector<int> adj[200000];
-bool visited[200000];
-set<int> S;
+#define MAXW 100000
+
 map<int, int> id;
-vector<int> aux;
+int cont;
+vector<int> L[2 * MAXW];
+bool visited[2 * MAXW],done[2 * MAXW];
+int h[2 * MAXW],cycle;
+
+void dfs(int cur, int prev, int curh){
+    if(visited[cur]) return;
+    visited[cur] = true;
+    h[cur] = curh;
+    
+    for(int i = L[cur].size() - 1,to;i >= 0;--i){
+        to = L[cur][i];
+        
+        if(!visited[to]) dfs(to,cur,curh + 1);
+        else if(to != prev && !done[to]) cycle = curh - h[to] + 1;
+    }
+    
+    done[cur] = true;
+}
 
 int main(){
-    int N,W,tc = 0;
+    int K,W;
     
     while(true){
-        scanf("%d %d",&N,&W);
-        if(N == 0) break;
-        tc++;
+        scanf("%d %d",&K,&W);
+        if(K == 0) break;
         
-        S.clear();
+        for(int i = 0;i < cont;++i)
+            L[i].clear();
         
-        for(int i = 0;i < W;++i){
-            scanf("%d %d",&A[i],&B[i]);
-            
-            S.insert(A[i]);
-            S.insert(B[i]);
-        }
-        
-        aux = vector<int>(S.begin(),S.end());
         id.clear();
-        V = aux.size();
+        cont = 0;
         
-        for(int i = 0;i < V;++i) id[aux[i]] = i;
-        for(int i = 0;i < V;++i) adj[i].clear();
-        
-        for(int i = 0;i < W;++i){
-            A[i] = id[A[i]];
-            B[i] = id[B[i]];
-            adj[A[i]].push_back(B[i]);
-            adj[B[i]].push_back(A[i]);
+        for(int i = 0,u,v;i < W;++i){
+            scanf("%d %d",&u,&v);
+            
+            if(id.find(u) == id.end()) id[u] = cont++;
+            if(id.find(v) == id.end()) id[v] = cont++;
+            
+            u = id[u]; v = id[v];
+            L[u].push_back(v);
+            L[v].push_back(u);
         }
         
         bool ok = true;
         
-        for(int i = 0;i < V;++i){
-            S = set<int>(adj[i].begin(),adj[i].end());
-            adj[i] = vector<int>(S.begin(),S.end());
-            deg[i] = adj[i].size();
-            if(deg[i] > 2) ok = false;
+        for(int i = 0;i < cont;++i){
+            sort(L[i].begin(),L[i].end());
+            L[i].erase(unique(L[i].begin(),L[i].end()),L[i].end());
         }
         
-        if(!ok) puts("N");
-        else{
-            memset(visited,false,sizeof(visited));
-            
-            for(int i = 0;i < V;++i){
-                if(!visited[i] && deg[i] == 1){
-                    int cur = adj[i][0];
-                    visited[i] = true;
-                    
-                    do{
-                        visited[cur] = true;
-                        if(deg[cur] == 1) break;
-                        int nxt = visited[adj[cur][0]]? adj[cur][1] : adj[cur][0];
-                        cur = nxt;
-                    }while(true);
-                }
-            }
-            
-            int cont = 0;
-            for(int i = 0;i < V;++i) if(visited[i]) ++cont;
-            
-            if(cont == 0 && V == N){
-                int cur = adj[0][0],u,v;
-                visited[0] = true;
-                
-                do{
-                    u = adj[cur][0];
-                    v = adj[cur][1];
-                    visited[cur] = true;
-                    
-                    if(!visited[u]) cur = u;
-                    else cur = v;
-                }while(!visited[u] || !visited[v]);
-                
-                for(int i = 0;i < V;++i) if(visited[i]) ++cont;
-                
-                if(cont == N) puts("Y");
-                else puts("N");
-            }else if(cont < V || !ok) puts("N");
-            else puts("Y");
+        for(int i = 0;i < cont;++i)
+            if(L[i].size() > 2)
+                ok = false;
+        
+        if(!ok){
+            puts("N");
+            continue;
         }
+        
+        memset(visited,false,sizeof visited);
+        memset(done,false,sizeof visited);
+        cycle = -1;
+        
+        for(int i = 0;i < cont;++i)
+            if(!visited[i])
+                dfs(i,-1,0);
+        
+        if(cycle == -1 || cycle == K) puts("Y");
+        else puts("N");
     }
     
     return 0;
