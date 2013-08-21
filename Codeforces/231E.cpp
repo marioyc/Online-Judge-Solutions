@@ -11,7 +11,7 @@ vector<int> L[MAXN],L2[MAXN];
 bool visited[MAXN],done[MAXN];
 int  h[MAXN];
 vector<int> path;
-int cycle[MAXN],cont = 0;
+int cycle[MAXN],ncycles,cont;
 
 void dfs(int cur, int curh, int prev){
     visited[cur] = true;
@@ -24,8 +24,8 @@ void dfs(int cur, int curh, int prev){
         if(!visited[to]) dfs(to,curh + 1,cur);
         else if(to != prev && !done[to]){
             for(int j = h[to];j <= curh;++j)
-                cycle[ path[j] ] = cont;
-            ++cont;
+                cycle[ path[j] ] = ncycles;
+            ++ncycles;
         }
     }
     
@@ -33,11 +33,14 @@ void dfs(int cur, int curh, int prev){
     path.pop_back();
 }
 
-int p[MAXN];
+int p[MAXN],ans[MAXN];
 
 void dfs2(int cur, int curh){
     visited[cur] = true;
     h[cur] = curh;
+    
+    if(cur == 0) ans[0] = (cur < ncycles? 1 : 0);
+    else ans[cur] = ans[ p[cur] ] + (cur < ncycles? 1 : 0);
     
     for(int i = L2[cur].size() - 1,to;i >= 0;--i){
         to = L2[cur][i];
@@ -49,37 +52,24 @@ void dfs2(int cur, int curh){
     }
 }
 
-int P[17][MAXN],sum[17][MAXN];
+int P[17][MAXN];
 
-int solve(int u, int v){
+int lca(int u, int v){
     if(h[u] < h[v]) swap(u,v);
+    int diff = h[u] - h[v];
     
-    int diff = h[u] - h[v],ret = 0;
-    
-    for(int i = 0;i <= 16;++i){
-        if(diff >> i & 1){
-            ret += sum[i][u];
+    for(int i = 0;i <= 16;++i)
+        if(diff >> i & 1)
             u = P[i][u];
-        }
-    }
     
-    for(int i = 16;i >= 0;--i){
-        if(P[i][u] != P[i][v]){
-            ret += sum[i][u] + sum[i][v];
-            
-            u = P[i][u];
-            v = P[i][v];
-        }
-    }
+    for(int i = 16;i >= 0;--i)
+        if(P[i][u] != P[i][v])
+            u = P[i][u], v = P[i][v];
     
-    if(u != v){
-        ret += sum[0][u] + sum[0][v];
-        u = P[0][u]; v = P[0][v];
-    }
+    if(u != v)
+        u = P[0][u], v = P[0][v];
     
-    ret += sum[0][u];
-    
-    return ret;
+    return u;
 }
 
 #define MOD 1000000007
@@ -109,8 +99,7 @@ int main(){
     
     memset(cycle,-1,sizeof cycle);
     dfs(1,0,0);
-    
-    int ncycles = cont;
+    cont = ncycles;
     
     for(int i = 1;i <= n;++i)
         if(cycle[i] == -1) cycle[i] = cont++;
@@ -130,24 +119,14 @@ int main(){
         L2[i].erase(unique(L2[i].begin(),L2[i].end()),L2[i].end());
     
     memset(visited,false,sizeof visited);
-    p[0] = -1;
     dfs2(0,0);
     
-    memset(P,-1,sizeof P);
-    
-    for(int i = 0;i < n;++i){
+    for(int i = 0;i < n;++i)
         P[0][i] = p[i];
-        sum[0][i] = (i < ncycles? 1 : 0);
-    }
     
-    for(int i = 1;i <= 16;++i){
-        for(int j = 0;j < n;++j){
-            if(P[i - 1][j] != -1){
-                P[i][j] = P[i - 1][ P[i - 1][j] ];
-                sum[i][j] = sum[i - 1][j] + sum[i - 1][ P[i - 1][j] ];
-            }
-        }
-    }
+    for(int i = 1;i <= 16;++i)
+        for(int j = 0;j < n;++j)
+            P[i][j] = P[i - 1][ P[i - 1][j] ];
     
     int Q,u,v;
     
@@ -155,7 +134,10 @@ int main(){
     
     while(Q--){
         scanf("%d %d",&u,&v);
-        printf("%d\n",mod_pow(2,solve(cycle[u],cycle[v])));
+        u = cycle[u]; v = cycle[v];
+        int x = lca(u,v);
+        int ret = ans[u] + ans[v] - 2 * ans[x] + (x < ncycles? 1 : 0);
+        printf("%d\n",mod_pow(2,ret));
     }
     
     return 0;
