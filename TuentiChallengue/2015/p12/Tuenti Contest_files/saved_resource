@@ -1,0 +1,16 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Index of /</title>
+  </head>
+  <body>
+<h1>Index of /</h1>
+<table><tr><td><code>(drwxrwxr-x)</code></td><td style="text-align: right; padding-left: 1em"><code></code></td><td style="padding-left: 1em"><a href="/css/">css/</a></td></tr>
+<tr><td><code>(drwxrwxr-x)</code></td><td style="text-align: right; padding-left: 1em"><code></code></td><td style="padding-left: 1em"><a href="/img/">img/</a></td></tr>
+<tr><td><code>(drwxrwxr-x)</code></td><td style="text-align: right; padding-left: 1em"><code></code></td><td style="padding-left: 1em"><a href="/js/">js/</a></td></tr>
+<tr><td><code>(-rw-rw-r--)</code></td><td style="text-align: right; padding-left: 1em"><code>3.4k</code></td><td style="padding-left: 1em"><a href="/index.htm">index.htm</a></td></tr>
+</table>
+<br><address>Node.js v0.10.26/ <a href="https://github.com/jesusabdullah/node-ecstatic">ecstatic</a> server running @ 54.83.207.93:8080</address>
+</body></html>

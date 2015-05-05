@@ -1,0 +1,136 @@
+* {
+  box-sizing: content-box;
+  font-family: "Ubuntu Mono", monospace;
+  font-size: 16px;
+}
+
+.hide {
+  visibility: hidden;
+  opacity: 0;
+}
+
+body {
+  background-color: #000;
+  background: url(back.jpg) fixed;
+  background-position: center;
+  margin: 0px; padding: 0px;
+}
+
+.win {
+  position: fixed; left: 0px; top: 0px;
+  box-shadow: 2px 2px 20px rgba(0,0,0,.8);
+  overflow: hidden;
+  border-radius: 4px;
+  border: 1px solid rgba(0,0,0,.5);
+}
+
+.win .back {
+  background: url(back.jpg) fixed;
+  background-position: center;
+  position: absolute; left: 0px; top: 0px;
+  z-index: -1;
+  width: 100%; height: 100%;
+  opacity: 0.3;
+  -webkit-filter: blur(3px) sepia(1);
+}
+
+.win .border {
+  padding: 3px;
+  background: rgba(255,255,255,.5);
+}
+
+.win .title {
+  padding: 3px 4px;
+  color: #333;
+  text-shadow: 0px 0px 10px #fff, 0px 0px 10px #fff, 0px 0px 10px #fff;
+  cursor: default;
+}
+
+.win .title h1 {
+  color: #000;
+  margin: 0; padding: 0;
+  font-size: 16px;
+}
+
+.win .body {
+  width: 600px; height: 300px;
+  overflow-y: auto; overflow-x: hidden;
+  padding: 2px;
+  border: 1px solid rgba(0,0,0,.3);
+  background: rgba(0,0,0,.8);
+}
+
+.win .body pre {
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  color: #0f0;
+  text-shadow: 0 0 4px #00aa00;
+  margin: 0; padding: 0;
+  padding: 2px 2px 0px 2px;
+}
+
+.win .body .bottom {
+  display: absolute; bottom: 0px;
+}
+
+.win .body .bottom .prompt {
+  color: #0f0;
+  text-shadow: 0 0 4px #00aa00;
+  float: left;
+  height: 1em;
+  padding: 0px 2px 4px 2px;
+}
+
+.win .body .bottom .input {
+  margin-left: 18px;
+}
+
+.win .body .bottom .input input {
+  color: #0f0;
+  display: block;
+  margin: 0px; padding: 0px;
+  border: 0; outline: 0;
+  height: 1em;
+  background: transparent;
+  text-shadow: 0 0 4px #00aa00;
+  width: 100%;
+}
+
+#photo.win .body {
+  width: auto;
+  height: auto;
+  padding: 0;
+}
+
+#photo.win img {
+  display: block;
+}
+
+.win .title .btn-close {
+  background: rgba(255,255,255,.2);;
+  float: right;
+  color: rgba(0,0,0,.7);
+  border: 1px solid rgba(0,0,0,.6);
+  text-shadow: 0 0 4px #fff;
+  width: 12px;
+  height: 12px;
+  cursor: pointer;
+  padding: none;
+  border-radius: 2px;
+  text-align: center;
+  line-height: 11px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.win .title .btn-close:hover {
+  background: #f44;
+}
+
+::-webkit-scrollbar { width: 5px; height: 3px; }
+::-webkit-scrollbar-button { height: 0px; background-color: #444; }
+::-webkit-scrollbar-track { background-color: rgba(0,0,0,.1); }
+::-webkit-scrollbar-track-piece { background-color: rgba(0,0,0,.1); }
+::-webkit-scrollbar-thumb { height: 0px; background-color: rgba(255,255,255,.2); border-radius: 3px; }
+::-webkit-scrollbar-corner { background-color: #000; }
+::-webkit-resizer { background-color: #000; }
