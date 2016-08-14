@@ -12,8 +12,8 @@ struct flow_graph{
     
     flow_graph(int V, int MAX_E){
         MAX_V = V; E = 0;
-        cap = new int[2*MAX_E], to = new int[2*MAX_E], next = new int[2*MAX_E];
-        last = new int[MAX_V], q = new int[MAX_V], dist = new int[MAX_V], now = new int[MAX_V];
+        cap = new int[2*MAX_E]; to = new int[2*MAX_E]; next = new int[2*MAX_E];
+        last = new int[MAX_V]; q = new int[MAX_V]; dist = new int[MAX_V]; now = new int[MAX_V];
         fill(last,last+MAX_V,-1);
     }
     
@@ -23,8 +23,8 @@ struct flow_graph{
     }
     
     void add_edge(int u, int v, int uv, int vu = 0){
-        to[E] = v, cap[E] = uv, next[E] = last[u]; last[u] = E++;
-        to[E] = u, cap[E] = vu, next[E] = last[v]; last[v] = E++;
+        to[E] = v, cap[E] = uv; next[E] = last[u]; last[u] = E++;
+        to[E] = u, cap[E] = vu; next[E] = last[v]; last[v] = E++;
     }
 	
 	bool bfs(){
