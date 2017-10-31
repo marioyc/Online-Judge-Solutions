@@ -14,7 +14,7 @@ int dj[]={1,0,-1,1,0,-1,1,-1};
 
 void dfs(int a, int b){
     
-    visited[a][b]=1;    
+    
     int I,J;
     
     for(int i=0;i<8;i++){
